@@ -4,34 +4,12 @@ const connectDatabase = require("./database/connect");
 const jwt = require("jsonwebtoken");
 const Usersmodel = require("./model/usersmodel");
 
-const {ACCESS_TOKEN_SECRET,REFRESH_TOKEN_SECRET} = require("./router/index");
 const app = express();
 const port = 3100;
-
 
 app.use(cors());
 
 app.use(express.json());
-
-app.use(async function (req,res,next) {
-    if(req.path!=="/login")
-    {
-
-        try {
-              let accessToken = req.headers.authorization;
-    accessToken = accessToken.split(" ")[1];
-   let decoded = await jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
-   /* Users.find({email:decoded.email); */
-
-    req.user =  await Usersmodel.findOne({"contact.email": decoded.data.email});
-    
-        } catch (error) {
-            console.log(error);
-        }
-  
-    }
-    next();
-});
 
 app.use("/", require("./router/index").router);
 
